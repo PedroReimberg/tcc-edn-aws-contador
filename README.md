@@ -1,6 +1,6 @@
 # tcc-edn-aws-contador
 
-> 🚧 **Projeto em Desenvolvimento:** Este repositório reflete o progresso contínuo. A arquitetura alvo está mapeada, e os componentes estão sendo implantados de forma incremental. Confira o nosso [Roadmap](#-estado-atual-do-projeto-roadmap) para ver o que já foi entregue e o que está por vir!
+> 🚧 **Projeto em Desenvolvimento:** Este repositório reflete o progresso contínuo. A arquitetura alvo está mapeada, e os componentes estão sendo implantados de forma incremental. Confira o nosso [Roadmap](#estado-atual-do-projeto-roadmap) para ver o que já foi entregue e o que está por vir!
 
 # TCC Escola da Nuvem — Grupo 6
 
