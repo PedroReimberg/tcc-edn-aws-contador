@@ -4,7 +4,7 @@ import boto3
 # Inicializa o recurso do DynamoDB
 dynamodb = boto3.resource('dynamodb')
 
-# Nome da tabela (deve ser exatamente o nome que você colocou no Passo 2)
+# Nome da tabela do DynamoDB
 table = dynamodb.Table('contador-teste') 
 
 def lambda_handler(event, context):
@@ -39,7 +39,7 @@ def lambda_handler(event, context):
                 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type'
             },
-            # Devolvemos 'acessos' para bater com o que o seu Frontend espera ler
+            # Devolvemos 'hits' para bater com o que o seu Frontend espera ler
             'body': json.dumps({'hits': int(total_acessos)})
         }
         
