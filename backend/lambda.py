@@ -4,13 +4,13 @@ import boto3
 # Inicializa o recurso do DynamoDB
 dynamodb = boto3.resource('dynamodb')
 
-# Nome da tabela
+# Nome da tabela (deve ser exatamente o nome que você colocou no Passo 2)
 table = dynamodb.Table('contador-teste') 
 
 def lambda_handler(event, context):
     try:
         # Descobre qual foi o método HTTP usado na requisição (GET ou POST)
-        # Em HTTP APIs do API Gateway, o método fica neste caminho do JSON
+        # Em HTTP APIs do API Gateway, o método fica neste caminho do JSON:
         http_method = event.get('requestContext', {}).get('http', {}).get('method', 'GET')
         
         total_acessos = 0
@@ -34,11 +34,12 @@ def lambda_handler(event, context):
         return {
             'statusCode': 200,
             'headers': {
+                # Troque pela URL exata do seu GitHub Pages
                 'Access-Control-Allow-Origin': 'https://pedroreimberg.github.io', 
                 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type'
             },
-            # Devolvemos 'hits' para bater com o que o Frontend espera ler
+            # Devolvemos 'acessos' para bater com o que o seu Frontend espera ler
             'body': json.dumps({'hits': int(total_acessos)})
         }
         
