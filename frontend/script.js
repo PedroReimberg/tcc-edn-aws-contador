@@ -1,5 +1,6 @@
 const contadorElemento = document.getElementById('contador-numero');
 const botaoInteresse = document.getElementById('btn-interesse');
+const botaoDecrement = document.getElementById('btn-decrement');
 
 const API_URL = 'https://uus3mejawi.execute-api.sa-east-1.amazonaws.com';
 
@@ -43,6 +44,13 @@ async function registrarInteresse() {
         botaoInteresse.style.background = "linear-gradient(135deg, #10b981 0%, #059669 100%)";
         botaoInteresse.style.boxShadow = "0 4px 20px rgba(16, 185, 129, 0.4)";
 
+        // Restaura o estado visual do botão de remoção, caso ele tenha sido clicado antes
+        botaoDecrement.disabled = false;
+        botaoDecrement.innerText = "Remover Interesse";
+        botaoDecrement.style.backgroundColor = "";
+        botaoDecrement.style.color = "";
+        botaoDecrement.style.borderColor = "";
+
     } catch (error) {
         console.error("Erro ao registrar:", error);
         alert("Não foi possível registrar no momento. Tente novamente.");
@@ -52,5 +60,43 @@ async function registrarInteresse() {
     }
 }
 
+// Remoção de interesse (Decremento)
+async function removerInteresse() {
+    try {
+        botaoDecrement.disabled = true;
+        botaoDecrement.innerText = "Removendo...";
+
+        const response = await fetch(`${API_URL}/decrement`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) throw new Error('Erro ao computar remoção de interesse');
+
+        await buscarContador();
+
+        botaoDecrement.innerText = "✓ Removido!";
+        botaoDecrement.style.backgroundColor = "rgba(239, 68, 68, 0.1)";
+        botaoDecrement.style.color = "#f87171";
+        botaoDecrement.style.borderColor = "#dc2626";
+
+        botaoInteresse.disabled = false;
+        botaoInteresse.innerText = "Tenho Interesse!";
+        botaoInteresse.style.background = "";
+        botaoInteresse.style.boxShadow = "";
+
+    } catch (error) {
+        console.error("Erro ao remover:", error);
+        alert("Não foi possível remover o interesse no momento. Tente novamente.");
+
+        botaoDecrement.disabled = false;
+        botaoDecrement.innerText = "Remover Interesse";
+    }
+}
+
 botaoInteresse.addEventListener('click', registrarInteresse);
+
+botaoDecrement.addEventListener('click', removerInteresse);
 window.addEventListener('DOMContentLoaded', buscarContador);
