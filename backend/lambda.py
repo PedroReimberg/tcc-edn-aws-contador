@@ -13,16 +13,29 @@ def lambda_handler(event, context):
         # Em HTTP APIs do API Gateway, o método fica neste caminho do JSON:
         http_method = event.get('requestContext', {}).get('http', {}).get('method', 'GET')
         
+        # NOVIDADE: Captura a rota/caminho da requisição para diferenciar o incremento do decremento
+        path = event.get('requestContext', {}).get('http', {}).get('path', '/')
+        
         total_acessos = 0
         
         if http_method == 'POST':
-            # APENAS NO POST: O usuário clicou no botão, então somamos +1
-            response = table.update_item(
-                Key={'id': 'hits'},
-                UpdateExpression='ADD quantidade_acessos :inc',
-                ExpressionAttributeValues={':inc': 1},
-                ReturnValues='UPDATED_NEW'
-            )
+            # Verifica se o POST veio especificamente da rota de decremento do Frontend
+            if '/decrement' in path:
+                # O usuário removeu o interesse: decrementamos -1 usando a mesma estrutura ADD
+                response = table.update_item(
+                    Key={'id': 'hits'},
+                    UpdateExpression='ADD quantidade_acessos :dec',
+                    ExpressionAttributeValues={':dec': -1},
+                    ReturnValues='UPDATED_NEW'
+                )
+            else:
+                # O usuário clicou no botão padrão: somamos +1
+                response = table.update_item(
+                    Key={'id': 'hits'},
+                    UpdateExpression='ADD quantidade_acessos :inc',
+                    ExpressionAttributeValues={':inc': 1},
+                    ReturnValues='UPDATED_NEW'
+                )
             total_acessos = response['Attributes']['quantidade_acessos']
             
         else:
