@@ -1,4 +1,4 @@
-Bucket policy
+# Bucket policy
 
 - Permite a leitura de **TODOS** os arquivos do bucket S3 utilizado para *Static Hosting Website* com a configuração de *Block all public access* em *Off*
 - [BUCKET-NAME] = Nome do bucket
