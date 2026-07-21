@@ -29,9 +29,10 @@ Resources:
   MyS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub 
-        - "website-tcc-edn-${RandomSuffix}"
-        - RandomSuffix: !Select [2, !Split ["-", !Ref AWS::StackId]]
+      # O nome da stack deve ser escrito somente com letras minusculas
+      BucketName: !Sub "${AWS::StackName}-website-tcc-${AWS::AccountId}" 
+      # Alternativa para esconder o AccountId da URL do S3
+      # BucketName: !Sub "${AWS::StackName}-website-${AWS::Region}-v1"
       WebsiteConfiguration:
         IndexDocument: index.html
       PublicAccessBlockConfiguration:
