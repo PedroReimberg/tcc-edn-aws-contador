@@ -1,17 +1,11 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: CloudFormation Template
 
-#Metadata:
+Description: Sistema Web Serverless integrando S3 (Frontend Estático), API Gateway, AWS Lambda e DynamoDB
 
-#Parameters:
-
-#Rules:
-
-#Mappings:
-
-#Conditions:
-
-#Transform:
+Metadata:
+  # Author:
+  Project: "TCC - Escola da Nuvem"
+  Version: "1.0.0"
 
 Resources:
   MyDynamoDBTable:
@@ -32,7 +26,7 @@ Resources:
       # O nome da stack deve ser escrito somente com letras minusculas
       BucketName: !Sub "${AWS::StackName}-website-tcc-${AWS::AccountId}" 
       # Alternativa para esconder o AccountId da URL do S3
-      # BucketName: !Sub "${AWS::StackName}-website-${AWS::Region}-v1"
+      # BucketName: !Sub "${AWS::StackName}-website-tcc-${AWS::Region}"
       WebsiteConfiguration:
         IndexDocument: index.html
       PublicAccessBlockConfiguration:
@@ -188,6 +182,14 @@ Resources:
       SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${MyHttpApi}/*/*"
 
 Outputs:
-  APIGatewayURL:
-    Description: "Copie esta URL e cole no seu script.js"
+  1ApiGatewayURL:
+    Description: "URL do Gateway API para usar no script.js"
     Value: !Sub "https://${MyHttpApi}.execute-api.${AWS::Region}.amazonaws.com/"
+
+  2S3ConsoleURL:
+    Description: "Link do bucket no console da AWS para enviar os arquivos"
+    Value: !Sub "https://${AWS::Region}.console.aws.amazon.com/s3/buckets/${MyS3Bucket}?region=${AWS::Region}&tab=objects"
+
+  3WebsiteURL:
+    Description: "URL final do seu site hospedado no S3"
+    Value: !Sub "http://${MyS3Bucket}.s3-website-${AWS::Region}.amazonaws.com"
