@@ -2,7 +2,7 @@ const contadorElemento = document.getElementById('contador-numero');
 const botaoInteresse = document.getElementById('btn-interesse');
 const botaoDecrement = document.getElementById('btn-decrement');
 
-const API_URL = 'https://uus3mejawi.execute-api.sa-east-1.amazonaws.com';
+const API_URL = 'API_URL';
 
 // 1.contagem atual
 async function buscarContador() {
