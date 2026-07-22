@@ -1,6 +1,7 @@
 const contadorElemento = document.getElementById('contador-numero');
 const botaoInteresse = document.getElementById('btn-interesse');
 
+# Alterar pelo valor de saida da Key "1ApiGatewayURL" do Outputs do CloudFormation
 const API_URL = 'API_URL';
 
 // Variável para controlar o estado (false = sem interesse, true = com interesse)
