@@ -36,7 +36,8 @@ async function alternarInteresse() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify({ action: 'increment' })
             });
 
             if (!response.ok) throw new Error('Erro ao computar clique');
@@ -53,11 +54,12 @@ async function alternarInteresse() {
             // --- AÇÃO DE REMOVER ---
             botaoInteresse.innerText = "Removendo...";
 
-            const response = await fetch(`${API_URL}/decrement`, {
+            const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify({ action: 'decrement' })
             });
 
             if (!response.ok) throw new Error('Erro ao computar remoção de interesse');
