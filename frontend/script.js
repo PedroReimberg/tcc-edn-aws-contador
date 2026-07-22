@@ -1,10 +1,12 @@
 const contadorElemento = document.getElementById('contador-numero');
 const botaoInteresse = document.getElementById('btn-interesse');
-const botaoDecrement = document.getElementById('btn-decrement');
 
 const API_URL = 'API_URL';
 
-// 1.contagem atual
+// Variável para controlar o estado (false = sem interesse, true = com interesse)
+let interesseConfirmado = false;
+
+// 1. Contagem atual
 async function buscarContador() {
     try {
         const response = await fetch(API_URL);
@@ -12,7 +14,7 @@ async function buscarContador() {
 
         const data = await response.json();
 
-        // atualiza o valor no html retornado pelo DynamoDB
+        // Atualiza o valor no HTML retornado pelo DynamoDB
         contadorElemento.innerText = data.hits;
     } catch (error) {
         console.error("Erro na busca do contador:", error);
@@ -20,83 +22,75 @@ async function buscarContador() {
     }
 }
 
-// 2. registro de interesse
-async function registrarInteresse() {
+// 2. Função unificada de alternância (Adicionar / Remover)
+async function alternarInteresse() {
     try {
-        // desabilita o botão evitando cliques duplos
+        // Desabilita o botão evitando cliques duplos durante a requisição
         botaoInteresse.disabled = true;
-        botaoInteresse.innerText = "Registrando...";
 
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+        if (!interesseConfirmado) {
+            // --- AÇÃO DE REGISTRAR ---
+            botaoInteresse.innerText = "Registrando...";
 
-        if (!response.ok) throw new Error('Erro ao computar clique');
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
 
-        // busca o contador atualizado
-        await buscarContador();
+            if (!response.ok) throw new Error('Erro ao computar clique');
 
-        // feedback visual
-        botaoInteresse.innerText = "✓ Confirmado!";
-        botaoInteresse.style.background = "linear-gradient(135deg, #10b981 0%, #059669 100%)";
-        botaoInteresse.style.boxShadow = "0 4px 20px rgba(16, 185, 129, 0.4)";
+            await buscarContador();
 
-        // Restaura o estado visual do botão de remoção, caso ele tenha sido clicado antes
-        botaoDecrement.disabled = false;
-        botaoDecrement.innerText = "Remover Interesse";
-        botaoDecrement.style.backgroundColor = "";
-        botaoDecrement.style.color = "";
-        botaoDecrement.style.borderColor = "";
+            // Atualiza para o estado de "Remover Interesse"
+            interesseConfirmado = true;
+            botaoInteresse.innerText = "Remover Interesse";
+            botaoInteresse.classList.remove('btn-primary');
+            botaoInteresse.classList.add('btn-secondary');
+
+        } else {
+            // --- AÇÃO DE REMOVER ---
+            botaoInteresse.innerText = "Removendo...";
+
+            const response = await fetch(`${API_URL}/decrement`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) throw new Error('Erro ao computar remoção de interesse');
+
+            await buscarContador();
+
+            // Retorna para o estado original de "Tenho Interesse!"
+            interesseConfirmado = false;
+            botaoInteresse.innerText = "Tenho Interesse!";
+            botaoInteresse.classList.remove('btn-secondary');
+            botaoInteresse.classList.add('btn-primary');
+        }
 
     } catch (error) {
-        console.error("Erro ao registrar:", error);
-        alert("Não foi possível registrar no momento. Tente novamente.");
+        console.error("Erro na operação:", error);
+        alert("Não foi possível processar sua solicitação no momento. Tente novamente.");
 
+        // Restaura o texto e as classes corretas de acordo com o estado atual em caso de erro
+        if (interesseConfirmado) {
+            botaoInteresse.innerText = "Remover Interesse";
+            botaoInteresse.classList.remove('btn-primary');
+            botaoInteresse.classList.add('btn-secondary');
+        } else {
+            botaoInteresse.innerText = "Tenho Interesse!";
+            botaoInteresse.classList.remove('btn-secondary');
+            botaoInteresse.classList.add('btn-primary');
+        }
+    } finally {
+        // Reabilita o botão independentemente de sucesso ou erro
         botaoInteresse.disabled = false;
-        botaoInteresse.innerText = "Tenho Interesse!";
     }
 }
 
-// Remoção de interesse (Decremento)
-async function removerInteresse() {
-    try {
-        botaoDecrement.disabled = true;
-        botaoDecrement.innerText = "Removendo...";
-
-        const response = await fetch(`${API_URL}/decrement`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (!response.ok) throw new Error('Erro ao computar remoção de interesse');
-
-        await buscarContador();
-
-        botaoDecrement.innerText = "✓ Removido!";
-        botaoDecrement.style.backgroundColor = "rgba(239, 68, 68, 0.1)";
-        botaoDecrement.style.color = "#f87171";
-        botaoDecrement.style.borderColor = "#dc2626";
-
-        botaoInteresse.disabled = false;
-        botaoInteresse.innerText = "Tenho Interesse!";
-        botaoInteresse.style.background = "";
-        botaoInteresse.style.boxShadow = "";
-
-    } catch (error) {
-        console.error("Erro ao remover:", error);
-        alert("Não foi possível remover o interesse no momento. Tente novamente.");
-
-        botaoDecrement.disabled = false;
-        botaoDecrement.innerText = "Remover Interesse";
-    }
-}
-
-botaoInteresse.addEventListener('click', registrarInteresse);
-
-botaoDecrement.addEventListener('click', removerInteresse);
+// Eventos
+botaoInteresse.addEventListener('click', alternarInteresse);
 window.addEventListener('DOMContentLoaded', buscarContador);

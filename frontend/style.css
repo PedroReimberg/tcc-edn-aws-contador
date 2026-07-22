@@ -64,7 +64,7 @@ p {
     border-radius: 40px;
 }
 
-/* Botão */
+/* Botão Primário (Tenho Interesse) */
 .btn-primary {
     background: linear-gradient(135deg, #1e1792 0%, #6294e6 100%);
     color: white;
@@ -73,9 +73,9 @@ p {
     font-weight: 500;
     border-radius: 17px;
     border: none;
-    cursor: grabbing;
+    cursor: pointer;
     box-shadow: 0 4px 20px rgba(79, 70, 229, 0.4);
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s, color 0.2s, border-color 0.2s;
 }
 
 .btn-primary:hover {
@@ -87,25 +87,25 @@ p {
     transform: translateY(0);
 }
 
-/* Botão Secundário (Remover Interesse) */
+/* Botão Secundário (Remover Interesse) - Ajustado para ter o mesmo tamanho/padding */
 .btn-secondary {
     background: transparent;
-    color: #9ca3af;
+    color: #ef4444; /* Vermelho sutil para destacar a ação de remoção */
     padding: 16px 36px;
     font-size: 1.1rem;
     font-weight: 500;
     border-radius: 17px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    cursor: grabbing;
-    margin: 8px;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    cursor: pointer;
+    box-shadow: none;
     transition: transform 0.2s, background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 
 .btn-secondary:hover {
     transform: translateY(-3px);
-    background-color: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.3);
-    color: white;
+    background-color: rgba(239, 68, 68, 0.08);
+    border-color: rgba(239, 68, 68, 0.8);
+    color: #f87171;
 }
 
 .btn-secondary:active {
