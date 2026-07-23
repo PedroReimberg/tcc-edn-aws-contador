@@ -66,7 +66,8 @@ A solução foi modularizada em uma arquitetura de camadas independentes. Parte 
          │
          ▼ (Operações atômicas seguras - ADD / REMOVE)
   ┌──────────────┐
-  │ Camada de    │ ► Amazon Dados │ ► Amazon DynamoDB (Tabela NoSQL com Partition Key fixa 'hits')
+  │ Camada de    │ ► Amazon DynamoDB (Tabela NoSQL com Partition Key fixa 'hits')
+  │ Dados        │
   └──────────────┘
 ```
 
@@ -129,8 +130,8 @@ Para reproduzir esta infraestrutura utilizando o AWS CloudFormation:
 ## 👥 Equipe / Autoria
 * **Grupo 6** — Turma Escola da Nuvem (2026).
 * **Integrantes:**
-  * Daniel
-  * Pedro
-  * Nicolas
-  * Maria Eduarda
-  * Samuel
+  * Daniel — [GitHub](https://github.com/) | [LinkedIn](https://www.linkedin.com/in/danieldevopsec/)
+  * Pedro — [GitHub](https://github.com/PedroReimberg) | [LinkedIn](https://www.linkedin.com/in/pedroreimberg/)   
+  * Nicolas — [GitHub](https://github.com/THENICKBOY100) | [LinkedIn](www.linkedin.com/in/nicolas-e-menezes/)  
+  * Maria Eduarda — [GitHub](https://github.com/eduarda-ferr) | [LinkedIn](https://www.linkedin.com/in/eduardafb/)
+  * Samuel — [GitHub](https://github.com/) | [LinkedIn](https://www.linkedin.com/)
