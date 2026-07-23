@@ -51,6 +51,8 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       RoleName: IAMLambdaRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -97,10 +99,12 @@ Resources:
           def lambda_handler(event, context):
               # Captura o método HTTP (GET ou POST) vindo do API Gateway V2
               http_method = event.get('requestContext', {}).get('http', {}).get('method', '')
+
+              print(f"Nova requisição recebida! Método: {http_method}")
               
               # Cabeçalhos de CORS exigidos pelo navegador
               headers = {
-                  'Access-Control-Allow-Origin': '*', # Pode alterar para a URL do S3 por segurança, mas o API Gateway já bloqueia requisições de outras URLs
+                  'Access-Control-Allow-Origin': '*', # API Gateway já bloqueia requisições de outras URLs
                   'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
                   'Access-Control-Allow-Headers': 'Content-Type'
               }
@@ -123,6 +127,8 @@ Resources:
                       
                       # Pega a ação ('increment' ou 'decrement'). Se não vier nada, assume increment.
                       action = body_data.get('action', 'increment')
+
+                      print(f"Ação processada pelo DynamoDB: {action}")
                       
                       if action == 'decrement':
                           # Decrementa -1 no DynamoDB
