@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Sistema Web Serverless integrando S3 (Frontend Estático), API Gateway, AWS Lambda e DynamoDB
+Description: Sistema Web Serverless integrando S3 (Frontend Estático), API Gateway, AWS Lambda, DynamoDB e CloudFront
 
 Metadata:
   # Author:
@@ -162,9 +162,7 @@ Resources:
       ProtocolType: HTTP
       CorsConfiguration:
         AllowOrigins:
-          # É possivel receber requisições de qualquer URL usando:
-          # - "*"
-          - !Sub "http://${MyS3Bucket}.s3-website-${AWS::Region}.amazonaws.com"
+          - !Sub "https://${MyCloudFrontDistribution.DomainName}"
         AllowMethods:
           - GET
           - POST
@@ -193,6 +191,9 @@ Resources:
       ApiId: !Ref MyHttpApi
       StageName: "$default"
       AutoDeploy: true
+      DefaultRouteSettings:
+        ThrottlingRateLimit: 5
+        ThrottlingBurstLimit: 10
 
   InvokeLambdaPermission:
     Type: AWS::Lambda::Permission
@@ -201,6 +202,24 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${MyHttpApi}/*/*"
+
+  MyCloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        DefaultRootObject: index.html
+        Origins:
+          - Id: S3Origin
+            # Aponta automaticamente para o Bucket S3 criado pelo YAML
+            DomainName: !GetAtt MyS3Bucket.RegionalDomainName
+            S3OriginConfig:
+              OriginAccessIdentity: "" 
+        DefaultCacheBehavior:
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          ForwardedValues:
+            QueryString: false
 
 Outputs:
   1ApiGatewayURL:
@@ -212,5 +231,9 @@ Outputs:
     Value: !Sub "https://${AWS::Region}.console.aws.amazon.com/s3/buckets/${MyS3Bucket}?region=${AWS::Region}&tab=objects"
 
   3WebsiteURL:
-    Description: "URL final do seu site hospedado no S3"
+    Description: "URL do seu site hospedado no S3"
     Value: !Sub "http://${MyS3Bucket}.s3-website-${AWS::Region}.amazonaws.com"
+  
+  4CloudFrontURL:
+    Description: "URL final do site com HTTPS usando CloudFront"
+    Value: !Sub "https://${MyCloudFrontDistribution.DomainName}"
